@@ -114,7 +114,7 @@ function HeaderLink($value, $key, $col, $dir) {
             <td><?php echo $row->staff_cabang; ?></td>
             <td><?php echo $row->staff_jabatan; ?></td>
             <td><?php echo $row->hari_masuk; ?></td>
-            <td><?php echo 'itung dulu'; ?></td>
+            <td><?php echo date_diff($row->date_end,$row->date_start); ?></td>
             <td><?php echo $row->izin_jumlah_hari; ?></td>
             <td><?php $total_a = get_total_component_a($row->staff_id,date('Y-m-d')); echo $total_a; ?></td>
             <td><?php $total_b = get_total_component_b($row->staff_id,date('Y-m-d')); echo $total_b; ?></td>

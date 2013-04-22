@@ -186,4 +186,46 @@ class Components extends CI_Controller {
       echo json_encode($components);
     }
 
+    public function report_detail($offset = 0) {
+		$this->load->helper('report');
+
+        $uri_segment = 3;
+        $offset = $this->uri->segment($uri_segment);
+
+        if ($this->input->get('search_by')) {
+        	$this->db->select('staffs.staff_id,staffs.staff_name,staffs.staff_cabang,staffs.staff_jabatan,staffs.pph_by_company,absensi.hari_masuk,cuti.date_start,cuti.date_end,izin.izin_jumlah_hari');
+        	$this->db->join('branches','branches.branch_name=staffs.staff_cabang');
+        	$this->db->join('absensi','absensi.staff_id=staffs.staff_id','left');
+        	$this->db->join('cuti','cuti.staff_id=staffs.staff_id AND `cuti`.`status` =  \'approve\'','left');
+        	$this->db->join('izin','izin.izin_staff_id=staffs.staff_id','left');
+        	$this->db->like($_GET['search_by'], $_GET['q']);
+        	$this->db->order_by('branches.branch_name', 'ASC');
+        	$this->db->limit($this->limit, $offset);
+        	$staff_branch = $this->db->get('staffs');
+            $total_rows = $staff_branch->num_rows();
+        } else {
+        	$this->db->select('staffs.staff_id,staffs.staff_name,staffs.staff_cabang,staffs.staff_jabatan,staffs.pph_by_company,absensi.hari_masuk,cuti.date_start,cuti.date_end,izin.izin_jumlah_hari');
+        	$this->db->join('branches','branches.branch_name=staffs.staff_cabang');
+        	$this->db->join('absensi','absensi.staff_id=staffs.staff_id','left');
+        	$this->db->join('cuti','cuti.staff_id=staffs.staff_id AND `cuti`.`status` =  \'approve\'','left');
+        	$this->db->join('izin','izin.izin_staff_id=staffs.staff_id','left');
+        	$this->db->order_by('branches.branch_name', 'ASC');
+        	$this->db->limit($this->limit, $offset);
+        	$staff_branch = $this->db->get('staffs');
+            $total_rows = $staff_branch->num_rows();
+        }
+
+        $data['staff_branch'] = $staff_branch;
+
+        $config['base_url'] = site_url("components/report_detail");
+        $config['total_rows'] = $total_rows;
+        $config['per_page'] = $this->limit;
+        $config['uri_segment'] = $uri_segment;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+
+        $this->load->view('components/report_detail', $data);
+        //$this->output->enable_profiler(true);
+    }
+
 }
