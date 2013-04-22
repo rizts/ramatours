@@ -180,6 +180,83 @@ class Assets extends CI_Controller {
         redirect('assets/');
     }
 
+    public function report_list($offset = 0) {
+        //$this->filter_access('Assets', 'roled_select', base_url());
+
+        $asset_list = new Asset();
+        $data['staff'] = new Staff();
+
+        switch ($this->input->get('c')) {
+            case "1":
+                $data['col'] = "asset_name";
+                break;
+            case "2":
+                $data['col'] = "asset_status";
+                break;
+            case "3":
+                $data['col'] = "staff_id";
+                break;
+            case "4":
+                $data['col'] = "date";
+                break;
+            case "5":
+                $data['col'] = "asset_id";
+                break;
+            default:
+                $data['col'] = "asset_id";
+        }
+
+        if ($this->input->get('d') == "1") {
+            $data['dir'] = "DESC";
+        } else {
+            $data['dir'] = "ASC";
+        }
+
+        $total_rows = $asset_list->count();
+        $data['title'] = "Assets";
+        $data['btn_add'] = anchor('assets/add', 'Add New', array('class' => 'btn btn-primary'));
+        $data['btn_home'] = anchor(base_url(), 'Home', array('class' => 'btn'));
+
+        $uri_segment = 3;
+        $offset = $this->uri->segment($uri_segment);
+
+    	if ($this->input->get('search')) {
+			if (strpos("date",$this->input->get('search_by')) >= 0) {
+				$asset_list->where($this->input->get('search_by'),$this->input->get('q'));
+			} else { $asset_list->like($this->input->get('search_by'),$this->input->get('q')); }
+		}
+
+        $asset_list->order_by($data['col'], $data['dir']);
+        $data['asset_list'] = $asset_list->get($this->limit, $offset)->all;
+
+        $config['base_url'] = site_url("assets/index");
+        $config['total_rows'] = $total_rows;
+        $config['per_page'] = $this->limit;
+        $config['uri_segment'] = $uri_segment;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+
+        $this->load->view('assets/report_list', $data);
+    }
+
+    public function to_pdf() {
+        $asset_list = new Asset();
+        $data['staff'] = new Staff();
+
+		$uri_segment = 3;
+        $offset = $this->uri->segment($uri_segment);
+
+        $asset_list->order_by('asset_id', 'ASC');
+        $data['asset_list'] = $asset_list->get($this->limit, $offset)->all;
+
+		$this->load->library('html2pdf');
+	    
+	    $this->html2pdf->paper('a4', 'landscape');
+	    $this->html2pdf->html($this->load->view('assets/to_pdf', $data, true));
+	    
+	    $this->html2pdf->create();
+    }
+
     function filter_access($module, $field, $page) {
         $user = new User();
         $status_access = $user->get_access($this->sess_role_id, $module, $field);
