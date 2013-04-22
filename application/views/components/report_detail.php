@@ -90,6 +90,7 @@ function HeaderLink($value, $key, $col, $dir) {
     <table class="table fpTable table-hover">
       <thead>
         <tr>
+          <th rowspan="2">Cabang</th>
           <th rowspan="2">Staff</th>
           <th rowspan="2">Title</th>
           <th colspan="3">Daftar Absensi</th>
@@ -108,20 +109,22 @@ function HeaderLink($value, $key, $col, $dir) {
         </tr>
       </thead>
       <?php
+      $branch = '';
       foreach ($staff_branch->result() as $row) {
       ?>
           <tr>
-            <td><?php echo $row->staff_cabang; ?></td>
+            <td><?php if ($row->staff_cabang == $branch) { echo '';} else { $branch = $row->staff_cabang; echo $row->staff_cabang;} ?></td>
+            <td><?php echo $row->staff_name; ?></td>
             <td><?php echo $row->staff_jabatan; ?></td>
             <td><?php echo $row->hari_masuk; ?></td>
-            <td><?php echo date_diff($row->date_end,$row->date_start); ?></td>
+            <td><?php echo floor((strtotime($row->date_end)-strtotime($row->date_start))/(60*60*24)); ?></td>
             <td><?php echo $row->izin_jumlah_hari; ?></td>
-            <td><?php $total_a = get_total_component_a($row->staff_id,date('Y-m-d')); echo $total_a; ?></td>
-            <td><?php $total_b = get_total_component_b($row->staff_id,date('Y-m-d')); echo $total_b; ?></td>
+            <td><?php $total_a = get_total_component_a($row->staff_id,date('Y-m-d')); echo number_format($total_a,0,',','.'); ?></td>
+            <td><?php $total_b = get_total_component_b($row->staff_id,date('Y-m-d')); echo number_format($total_b,0,',','.'); ?></td>
             <td><?php $grand = ($total_a+$total_b); echo $grand; ?></td>
-            <td><?php echo $row->pph_by_company == 'y'? get_total_monthly_tax($row->staff_id):'-'; ?></td>
-            <td><?php echo $row->pph_by_company == 'n'? get_total_monthly_tax($row->staff_id):'-'; ?></td>
-            <td><?php echo $row->pph_by_company == 'y'? $grand:($grand-get_total_monthly_tax($row->staff_id)); ?></td>
+            <td><?php echo $row->pph_by_company == 'y'? number_format(get_total_monthly_tax($row->staff_id),0,',','.'):'-'; ?></td>
+            <td><?php echo $row->pph_by_company == 'n'? number_format(get_total_monthly_tax($row->staff_id),0,',','.'):'-'; ?></td>
+            <td><?php echo $row->pph_by_company == 'y'? number_format($grand,0,',','.'):number_format(($grand-get_total_monthly_tax($row->staff_id)),0,',','.'); ?></td>
           </tr>
       <?php } ?>
     </table>
