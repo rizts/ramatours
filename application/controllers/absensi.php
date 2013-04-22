@@ -119,6 +119,56 @@ class Absensi extends CI_Controller{
     $this->absensi->update();
     redirect("absensi/index");
   }
-  
+   
+  function report(){
+    switch ($this->input->get('c')) {
+      case "1":
+          $data['col'] = "staff_id";
+          break;
+      case "2":
+          $data['col'] = "date";
+          break;
+      case "3":
+          $data['col'] = "hari_masuk";
+          break;
+      default:
+          $data['col'] = "staff_id";
+    }
+
+    if ($this->input->get('d') == "1") {
+        $data['dir'] = "DESC";
+    } else {
+        $data['dir'] = "ASC";
+    }
+    $total_rows = $this->absensi->get_all()->num_rows();
+    $data['title'] = "Absensi";
+    $data['btn_add'] = anchor('absensi/add', 'Add New', array('class' => 'btn btn-primary'));
+    $data['btn_home'] = anchor(base_url(), 'Home', array('class' => 'btn'));
+
+    $uri_segment = 3;
+    $offset = $this->uri->segment($uri_segment);
+    $data['absensi'] = $this->absensi->list_where($this->input->get('search_by'),$this->input->get('q'));
+
+    $config['base_url'] = site_url("absensi/index");
+    $config['total_rows'] = $total_rows;
+    $config['per_page'] = $this->limit;
+    $config['uri_segment'] = $uri_segment;
+    $this->pagination->initialize($config);
+    $data['pagination'] = $this->pagination->create_links();
+    
+    $this->load->view("absensi/report", $data);
+  }
+   
+  function to_pdf(){
+    $offset = $this->uri->segment(3);
+    $data['absensi'] = $this->absensi->list_where();
+
+  $this->load->library('html2pdf');
+    
+    $this->html2pdf->paper('a4', 'landscape');
+    $this->html2pdf->html($this->load->view("absensi/to_pdf", $data, true));
+
+    $this->html2pdf->create();
+  }
   
 }
