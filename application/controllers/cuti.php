@@ -142,4 +142,98 @@ class Cuti extends CI_Controller{
     $this->db->delete("cuti_detail", array("cuti_id"=>$id));
     redirect("cuti/index");
   }
+  
+  function report(){
+    switch ($this->input->get('c')) {
+      case "1":
+          $data['col'] = "staff_id";
+          break;
+      case "2":
+          $data['col'] = "date_request";
+          break;
+      case "3":
+          $data['col'] = "date_start";
+          break;
+      case "4":
+          $data['col'] = "date_end";
+          break;
+      default:
+          $data['col'] = "staff_id";
+    }
+
+    if ($this->input->get('d') == "1") {
+        $data['dir'] = "DESC";
+    } else {
+        $data['dir'] = "ASC";
+    }
+    $total_rows = $this->cuti->get_all()->num_rows();
+    $data['title'] = "Izin";
+    $data['btn_add'] = anchor('cuti/add', 'Add New', array('class' => 'btn btn-primary'));
+    $data['btn_home'] = anchor(base_url(), 'Home', array('class' => 'btn'));
+
+    $uri_segment = 3;
+    $offset = $this->uri->segment($uri_segment);
+     $data['cuti'] = $this->cuti->list_where($this->input->get('search_by'),$this->input->get('q'));
+
+    $config['base_url'] = site_url("cuti/index");
+    $config['total_rows'] = $total_rows;
+    $config['per_page'] = $this->limit;
+    $config['uri_segment'] = $uri_segment;
+    $this->pagination->initialize($config);
+    $data['pagination'] = $this->pagination->create_links();
+    
+    // update status purpose
+    $data["status"] = array(
+      "pending"=>"Pending",
+      "approve"=>"Approve",
+      "decline"=>"Decline"
+    );
+    
+    $data["comment"] = array("name"=>"comment", "id"=>"comment");
+    
+    $this->load->view("cuti/report", $data);
+  }
+  
+  function to_pdf(){
+    switch ($this->input->get('c')) {
+      case "1":
+          $data['col'] = "staff_id";
+          break;
+      case "2":
+          $data['col'] = "date_request";
+          break;
+      case "3":
+          $data['col'] = "date_start";
+          break;
+      case "4":
+          $data['col'] = "date_end";
+          break;
+      default:
+          $data['col'] = "staff_id";
+    }
+
+    if ($this->input->get('d') == "1") {
+        $data['dir'] = "DESC";
+    } else {
+        $data['dir'] = "ASC";
+    }
+
+   	$data['cuti'] = $this->cuti->list_where($this->input->get('search_by'),$this->input->get('q'));
+    
+    // update status purpose
+    $data["status"] = array(
+      "pending"=>"Pending",
+      "approve"=>"Approve",
+      "decline"=>"Decline"
+    );
+    
+    $data["comment"] = array("name"=>"comment", "id"=>"comment");
+    
+	$this->load->library('html2pdf');
+    
+    $this->html2pdf->paper('a4', 'landscape');
+    $this->html2pdf->html($this->load->view("cuti/to_pdf", $data, true));
+    
+    $this->html2pdf->create();
+  }
 }
