@@ -66,7 +66,7 @@ function HeaderLink($value, $key, $col, $dir) {
         </div>
         <br class="cl" />
         <div class="head blue">
-            <?php echo header_btn_group_report("assets/to_pdf"); ?>
+            <?php echo header_btn_group_report("assets/report_list"); ?>
         </div>
         <div id="search_bar" class="widget-header">
             <?php search_form(array("" => "By", "asset_name" => "Name", "code" => "Code", "date_buy" => "Tgl Beli", "date_tempo" => "Tgl Tempo")); ?>

@@ -85,7 +85,7 @@ function HeaderLink($value, $key, $col, $dir) {
     </div>
     <br class="cl" />
     <div class="head blue">
-      <?php echo header_btn_group_report("staffs/cuti_to_pdf/".$this->input->get("search_by")."/".$this->input->get("q"));?>
+      <?php echo header_btn_group_report("staffs/report_cuti/");?>
     </div>
     <div id="search_bar" class="widget-header">
       <?php search_form(array(""=>"By","staff_name"=>"Nama","staff_birthdate"=>"Tgl Lahir")); ?>

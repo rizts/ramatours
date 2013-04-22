@@ -59,7 +59,7 @@ function HeaderLink($value, $key, $col, $dir) {
         </div>
         <br class="cl" />
         <div class="head blue">
-            <?php echo header_btn_group_report("absensi/to_pdf"); ?>
+            <?php echo header_btn_group_report("absensi/report"); ?>
         </div>
         <div id="search_bar" class="widget-header">
             <?php search_form(array("" => "By", "staff_name" => "Name", "branch_name" => "Branch")); ?>

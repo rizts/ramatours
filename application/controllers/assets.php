@@ -229,32 +229,24 @@ class Assets extends CI_Controller {
         $asset_list->order_by($data['col'], $data['dir']);
         $data['asset_list'] = $asset_list->get($this->limit, $offset)->all;
 
-        $config['base_url'] = site_url("assets/index");
-        $config['total_rows'] = $total_rows;
-        $config['per_page'] = $this->limit;
-        $config['uri_segment'] = $uri_segment;
-        $this->pagination->initialize($config);
-        $data['pagination'] = $this->pagination->create_links();
+		if ($this->input->get('to') == 'pdf') {
+			$this->load->library('html2pdf');
 
-        $this->load->view('assets/report_list', $data);
-    }
-
-    public function to_pdf() {
-        $asset_list = new Asset();
-        $data['staff'] = new Staff();
-
-		$uri_segment = 3;
-        $offset = $this->uri->segment($uri_segment);
-
-        $asset_list->order_by('asset_id', 'ASC');
-        $data['asset_list'] = $asset_list->get($this->limit, $offset)->all;
-
-		$this->load->library('html2pdf');
+			$this->html2pdf->filename = 'asset_list_report.pdf';
+	    	$this->html2pdf->paper('a4', 'landscape');
+	    	$this->html2pdf->html($this->load->view('assets/to_pdf', $data, true));
 	    
-	    $this->html2pdf->paper('a4', 'landscape');
-	    $this->html2pdf->html($this->load->view('assets/to_pdf', $data, true));
-	    
-	    $this->html2pdf->create();
+	    	$this->html2pdf->create();
+		} else {
+	        $config['base_url'] = site_url("assets/index");
+	        $config['total_rows'] = $total_rows;
+	        $config['per_page'] = $this->limit;
+	        $config['uri_segment'] = $uri_segment;
+	        $this->pagination->initialize($config);
+	        $data['pagination'] = $this->pagination->create_links();
+
+        	$this->load->view('assets/report_list', $data);
+        }
     }
 
     function filter_access($module, $field, $page) {

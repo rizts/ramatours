@@ -351,53 +351,33 @@ class Assets_Handover extends CI_Controller {
                         ->order_by($data['col'], $data['dir'])
                         ->get($this->limit, $offset)->all;
 
-        $config['base_url'] = site_url('assets/' . $this->asset_id . '/handover/detail');
-        $config['total_rows'] = $total_rows;
-        $config['per_page'] = $this->limit;
-        $config['uri_segment'] = $this->uri_segment;
-        $this->pagination->initialize($config);
-        $data['pagination'] = $this->pagination->create_links();
+		if ($this->input->get('to') == 'pdf') {
+			$data['id'] = $rs->asset_id;
+	        $data['asset_name'] = $rs->asset_name;
+	        $data['asset_code'] = $rs->asset_code;
+	        $data['asset_status'] = $rs->asset_status == '1'? 'Enable':'Disable';
 
-        $this->load->view('assets_handover/report', $data);
-    }
+	        $date = new DateTime($rs->date);
+	        $data['date_handover'] = ($rs->date == '0000-00-00' || $rs->date == '0000-00-00 00:00:00')? '':$date->format('d-m-Y');
+	        $data['description'] = $rs->discription;
 
-    function to_pdf() {
-        $this->asset_id = $this->uri->segment(3);
+			$this->load->library('html2pdf');
 
-        $asset = new Asset();
-        $rs = $asset->where('asset_id', $this->asset_id)->get();
-        $data['id'] = $rs->asset_id;
-        $data['asset_name'] = $rs->asset_name;
-        $data['asset_code'] = $rs->asset_code;
-        $data['asset_status'] = $rs->asset_status == '1'? 'Enable':'Disable';
-
-        $date = new DateTime($rs->date);
-        $data['date_handover'] = ($rs->date == '0000-00-00' || $rs->date == '0000-00-00 00:00:00')? '':$date->format('d-m-Y');
-        $data['description'] = $rs->discription;
-
-        // Staffs
-        $staff = new Staff();
-        $used_by = $staff->where('staff_id',$rs->staff_id)->get();
-        $data['staff_name'] = $used_by->staff_name;
-
-        $data['date'] = array('name' => 'date', 'id' => 'date', 'value' => $rs->date);
-
-        $asset_handover = new Asset_Handover();
-        $data['staff'] = new Staff();
-
-        $offset = $this->uri->segment($this->uri_segment);
-
-        $data['assets_handover'] = $asset_handover
-                        ->where('trasset_asset_id', $this->asset_id)
-                        ->order_by('trasset_id', 'ASC')
-                        ->get($this->limit, $offset)->all;
-
-		$this->load->library('html2pdf');
+			$this->html2pdf->filename = 'detail_asset_handover_report.pdf';
+	    	$this->html2pdf->paper('a4', 'landscape');
+	    	$this->html2pdf->html($this->load->view('assets_handover/to_pdf', $data, true));
 	    
-	    $this->html2pdf->paper('a4', 'landscape');
-	    $this->html2pdf->html($this->load->view('assets_handover/to_pdf', $data, true));
-	    
-	    $this->html2pdf->create();
+	    	$this->html2pdf->create();
+		} else {
+	        $config['base_url'] = site_url('assets/' . $this->asset_id . '/handover/detail');
+	        $config['total_rows'] = $total_rows;
+	        $config['per_page'] = $this->limit;
+	        $config['uri_segment'] = $this->uri_segment;
+	        $this->pagination->initialize($config);
+	        $data['pagination'] = $this->pagination->create_links();
+
+	        $this->load->view('assets_handover/report', $data);
+        }
     }
 
     function filter_access($module, $field, $page) {

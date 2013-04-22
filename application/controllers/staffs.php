@@ -770,82 +770,24 @@ class Staffs extends CI_Controller {
         $data['staff_list'] = $staff_list
                         ->get($this->limit, $offset)->all;
 
-        $config['base_url'] = site_url("staffs/index");
-        $config['total_rows'] = $total_rows;
-        $config['per_page'] = $this->limit;
-        $config['uri_segment'] = $uri_segment;
-        $this->pagination->initialize($config);
-        $data['pagination'] = $this->pagination->create_links();
+		if ($this->input->get('to') == 'pdf') {
+			$this->load->library('html2pdf');
 
-        $this->load->view('staffs/report_list', $data);
-    }
-
-    public function list_to_pdf() {
-        $staff_list = new Staff();
-        switch ($this->input->get('c')) {
-            case "1":
-                $data['col'] = "staff_nik";
-                break;
-            case "2":
-                $data['col'] = "staff_name";
-                break;
-            case "3":
-                $data['col'] = "staff_address";
-                break;
-            case "4":
-                $data['col'] = "staff_email";
-                break;
-            case "5":
-                $data['col'] = "staff_phone_home";
-                break;
-            case "6":
-                $data['col'] = "staff_phone_hp";
-                break;
-            case "7":
-                $data['col'] = "staff_cabang";
-                break;
-            case "8":
-                $data['col'] = "staff_departement";
-                break;
-            case "9":
-                $data['col'] = "staff_jabatan";
-                break;
-            case "10":
-                $data['col'] = "staff_id";
-                break;
-            default:
-                $data['col'] = "staff_id";
-        }
-
-        if ($this->input->get('d') == "1") {
-            $data['dir'] = "DESC";
-        } else {
-            $data['dir'] = "ASC";
-        }
-
-		$data['search_by'] = $this->uri->segment(3);
-		$data['q'] = $this->uri->segment(4);
-
-		if ($this->input->get("q") != "") {
-			$param = $this->input->get("q");
-			if ($this->input->get("search_by") == "staff_birthdate") {
-				$birthdate = str_replace(date('Y-'),"",$param);
-				$staff_list->where("DATE_FORMAT(".$this->input->get("search_by").",'%m-%d')",$birthdate);
-			} else {
-				$staff_list->like($this->input->get("search_by"),$param);
-			}
-		}
-
-        $staff_list->order_by($data['col'], $data['dir']);
-        $data['staff_list'] = $staff_list
-                        ->get()->all;
-
-		$this->load->library('html2pdf');
+			$this->html2pdf->filename = 'staff_list_report.pdf';
+	    	$this->html2pdf->paper('a4', 'landscape');
+	    	$this->html2pdf->html($this->load->view('staffs/list_to_pdf', $data, true));
 	    
-	    $this->html2pdf->paper('a4', 'landscape');
-	    $this->html2pdf->html($this->load->view('staffs/list_to_pdf', $data, true));
-	    
-	    $this->html2pdf->create();
+	    	$this->html2pdf->create();
+		} else {
+	        $config['base_url'] = site_url("staffs/index");
+	        $config['total_rows'] = $total_rows;
+	        $config['per_page'] = $this->limit;
+	        $config['uri_segment'] = $uri_segment;
+	        $this->pagination->initialize($config);
+	        $data['pagination'] = $this->pagination->create_links();
+
+        	$this->load->view('staffs/report_list', $data);
+        }
     }
 
     public function report_cuti($offset = 0) {
@@ -908,80 +850,24 @@ class Staffs extends CI_Controller {
         $data['staff_list'] = $staff_list
                         ->get($this->limit, $offset)->all;
 
-        $config['base_url'] = site_url("staffs/index");
-        $config['total_rows'] = $total_rows;
-        $config['per_page'] = $this->limit;
-        $config['uri_segment'] = $uri_segment;
-        $this->pagination->initialize($config);
-        $data['pagination'] = $this->pagination->create_links();
+		if ($this->input->get('to') == 'pdf') {
+			$this->load->library('html2pdf');
 
-        $this->load->view('staffs/report_cuti', $data);
-    }
-
-    public function cuti_to_pdf() {
-        $staff_list = new Staff();
-        switch ($this->input->get('c')) {
-            case "1":
-                $data['col'] = "staff_nik";
-                break;
-            case "2":
-                $data['col'] = "staff_name";
-                break;
-            case "3":
-                $data['col'] = "staff_address";
-                break;
-            case "4":
-                $data['col'] = "staff_email";
-                break;
-            case "5":
-                $data['col'] = "staff_phone_home";
-                break;
-            case "6":
-                $data['col'] = "staff_phone_hp";
-                break;
-            case "7":
-                $data['col'] = "staff_cabang";
-                break;
-            case "8":
-                $data['col'] = "staff_departement";
-                break;
-            case "9":
-                $data['col'] = "staff_jabatan";
-                break;
-            case "10":
-                $data['col'] = "staff_id";
-                break;
-            case "11":
-                $data['col'] = "saldo_cuti";
-                break;
-            default:
-                $data['col'] = "staff_id";
-        }
-
-        if ($this->input->get('d') == "1") {
-            $data['dir'] = "DESC";
-        } else {
-            $data['dir'] = "ASC";
-        }
-
-		$data['search_by'] = $this->uri->segment(3);
-		$data['q'] = $this->uri->segment(4);
-
-		if ($this->input->get("q") != "") {
-			$param = $this->input->get("q");
-			$staff_list->like($this->input->get("search_by"),$param);
-		}
-
-        $staff_list->order_by($data['col'], $data['dir']);
-        $data['staff_list'] = $staff_list
-                        ->get()->all;
-
-		$this->load->library('html2pdf');
+			$this->html2pdf->filename = 'sisa_cuti_staff_report.pdf';
+	    	$this->html2pdf->paper('a4', 'landscape');
+	    	$this->html2pdf->html($this->load->view('staffs/cuti_to_pdf', $data, true));
 	    
-	    $this->html2pdf->paper('a4', 'landscape');
-	    $this->html2pdf->html($this->load->view('staffs/cuti_to_pdf', $data, true));
-	    
-	    $this->html2pdf->create();
+	    	$this->html2pdf->create();
+		} else {
+	        $config['base_url'] = site_url("staffs/index");
+	        $config['total_rows'] = $total_rows;
+	        $config['per_page'] = $this->limit;
+	        $config['uri_segment'] = $uri_segment;
+	        $this->pagination->initialize($config);
+	        $data['pagination'] = $this->pagination->create_links();
+
+        	$this->load->view('staffs/report_cuti', $data);
+        }
     }
 
 }

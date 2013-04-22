@@ -82,7 +82,7 @@ function HeaderLink($value, $key, $col, $dir) {
     </div>
     <br class="cl" />
     <div class="head blue">
-      <?php echo header_btn_group_report("components/detail_to_pdf/");?>
+      <?php echo header_btn_group_report("components/report_detail/");?>
     </div>
     <div id="search_bar" class="widget-header">
       <?php search_form(array(""=>"By","staff_name"=>"Nama","branch_name"=>"Branch")); ?>

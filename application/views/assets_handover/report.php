@@ -68,7 +68,7 @@ function HeaderLink($value, $key, $asset_id, $col, $dir) {
         </div>
         <br class="cl" />
         <div class="head blue">
-            <?php echo header_btn_group_report("assets_handover/to_pdf/".$asset_id); ?>
+            <?php echo header_btn_group_report("assets_handover/report/"); ?>
         </div>
         <div class="clearfix"></div>
         <br />

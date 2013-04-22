@@ -133,45 +133,24 @@ class Izin extends CI_Controller{
     $offset = $this->uri->segment($uri_segment);
     $data['izin'] = $this->izin->list_where($this->input->get('search_by'),$this->input->get('q'));
 
-    $config['base_url'] = site_url("izin/index");
-    $config['total_rows'] = $total_rows;
-    $config['per_page'] = $this->limit;
-    $config['uri_segment'] = $uri_segment;
-    $this->pagination->initialize($config);
-    $data['pagination'] = $this->pagination->create_links();
-    
-    $this->load->view("izin/report", $data);
-  }
-  
-  function to_pdf(){
-    switch ($this->input->get('c')) {
-      case "1":
-          $data['col'] = "izin_staff_id";
-          break;
-      case "2":
-          $data['col'] = "izin_date";
-          break;
-      case "3":
-          $data['col'] = "izin_jumlah_hari";
-          break;
-      default:
-          $data['col'] = "izin_staff_id";
-    }
+	if ($this->input->get('to') == 'pdf') {
+		$this->load->library('html2pdf');
 
-    if ($this->input->get('d') == "1") {
-        $data['dir'] = "DESC";
-    } else {
-        $data['dir'] = "ASC";
+		$this->html2pdf->filename = 'izin_report.pdf';
+	   	$this->html2pdf->paper('a4', 'landscape');
+	   	$this->html2pdf->html($this->load->view("izin/to_pdf", $data, true));
+	    
+	   	$this->html2pdf->create();
+	} else {
+	    $config['base_url'] = site_url("izin/index");
+	    $config['total_rows'] = $total_rows;
+	    $config['per_page'] = $this->limit;
+	    $config['uri_segment'] = $uri_segment;
+	    $this->pagination->initialize($config);
+	    $data['pagination'] = $this->pagination->create_links();
+    
+    	$this->load->view("izin/report", $data);
     }
-
-    $data['izin'] = $this->izin->list_where($this->input->get('search_by'),$this->input->get('q'));
-    
-  $this->load->library('html2pdf');
-    
-    $this->html2pdf->paper('a4', 'landscape');
-    $this->html2pdf->html($this->load->view("izin/to_pdf", $data, true));
-    
-    $this->html2pdf->create();
   }
   
 }

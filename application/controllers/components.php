@@ -215,16 +215,26 @@ class Components extends CI_Controller {
             $total_rows = $staff_branch->num_rows();
         }
 
-        $data['staff_branch'] = $staff_branch;
+    	$data['staff_branch'] = $staff_branch;
 
-        $config['base_url'] = site_url("components/report_detail");
-        $config['total_rows'] = $total_rows;
-        $config['per_page'] = $this->limit;
-        $config['uri_segment'] = $uri_segment;
-        $this->pagination->initialize($config);
-        $data['pagination'] = $this->pagination->create_links();
+		if ($this->input->get('to') == 'pdf') {
+			$this->load->library('html2pdf');
 
-        $this->load->view('components/report_detail', $data);
+			$this->html2pdf->filename = 'detail_staff_component_report.pdf';
+	    	$this->html2pdf->paper('a4', 'landscape');
+	    	$this->html2pdf->html($this->load->view('components/detail_to_pdf', $data, true));
+	    
+	    	$this->html2pdf->create();
+		} else {
+	        $config['base_url'] = site_url("components/report_detail");
+	        $config['total_rows'] = $total_rows;
+	        $config['per_page'] = $this->limit;
+	        $config['uri_segment'] = $uri_segment;
+	        $this->pagination->initialize($config);
+	        $data['pagination'] = $this->pagination->create_links();
+
+        	$this->load->view('components/report_detail', $data);
+        }
         //$this->output->enable_profiler(true);
     }
 

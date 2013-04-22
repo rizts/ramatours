@@ -173,14 +173,7 @@ class Cuti extends CI_Controller{
 
     $uri_segment = 3;
     $offset = $this->uri->segment($uri_segment);
-     $data['cuti'] = $this->cuti->list_where($this->input->get('search_by'),$this->input->get('q'));
-
-    $config['base_url'] = site_url("cuti/index");
-    $config['total_rows'] = $total_rows;
-    $config['per_page'] = $this->limit;
-    $config['uri_segment'] = $uri_segment;
-    $this->pagination->initialize($config);
-    $data['pagination'] = $this->pagination->create_links();
+    $data['cuti'] = $this->cuti->list_where($this->input->get('search_by'),$this->input->get('q'));
     
     // update status purpose
     $data["status"] = array(
@@ -188,52 +181,26 @@ class Cuti extends CI_Controller{
       "approve"=>"Approve",
       "decline"=>"Decline"
     );
-    
-    $data["comment"] = array("name"=>"comment", "id"=>"comment");
-    
-    $this->load->view("cuti/report", $data);
-  }
-  
-  function to_pdf(){
-    switch ($this->input->get('c')) {
-      case "1":
-          $data['col'] = "staff_id";
-          break;
-      case "2":
-          $data['col'] = "date_request";
-          break;
-      case "3":
-          $data['col'] = "date_start";
-          break;
-      case "4":
-          $data['col'] = "date_end";
-          break;
-      default:
-          $data['col'] = "staff_id";
-    }
 
-    if ($this->input->get('d') == "1") {
-        $data['dir'] = "DESC";
-    } else {
-        $data['dir'] = "ASC";
-    }
+	if ($this->input->get('to') == 'pdf') {
+		$this->load->library('html2pdf');
 
-   	$data['cuti'] = $this->cuti->list_where($this->input->get('search_by'),$this->input->get('q'));
+		$this->html2pdf->filename = 'cuti_report.pdf';
+    	$this->html2pdf->paper('a4', 'landscape');
+    	$this->html2pdf->html($this->load->view("cuti/to_pdf", $data, true));
+	    
+    	$this->html2pdf->create();
+	} else {
+	    $config['base_url'] = site_url("cuti/index");
+	    $config['total_rows'] = $total_rows;
+	    $config['per_page'] = $this->limit;
+	    $config['uri_segment'] = $uri_segment;
+	    $this->pagination->initialize($config);
+	    $data['pagination'] = $this->pagination->create_links();
     
-    // update status purpose
-    $data["status"] = array(
-      "pending"=>"Pending",
-      "approve"=>"Approve",
-      "decline"=>"Decline"
-    );
+    	$data["comment"] = array("name"=>"comment", "id"=>"comment");
     
-    $data["comment"] = array("name"=>"comment", "id"=>"comment");
-    
-	$this->load->library('html2pdf');
-    
-    $this->html2pdf->paper('a4', 'landscape');
-    $this->html2pdf->html($this->load->view("cuti/to_pdf", $data, true));
-    
-    $this->html2pdf->create();
+    	$this->load->view("cuti/report", $data);
+    }
   }
 }

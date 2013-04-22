@@ -214,7 +214,7 @@ function header_btn_group_report($download_url = "#"){
     <a href="<?php echo base_url('dashboard/index'); ?>" class="btn btn-primary bootstrap-tooltip" data-placement="top" data-title="Back to Dashboard">
       <span class="icon-home icon-white"></span>
     </a>
-    <a href="<?php echo base_url($download_url.'?'.$_SERVER['QUERY_STRING']); ?>" class="btn btn-primary bootstrap-tooltip" data-placement="top" data-title="Download">
+    <a href="<?php echo base_url($download_url.'?'.$_SERVER['QUERY_STRING'].'&to=pdf'); ?>" class="btn btn-primary bootstrap-tooltip" data-placement="top" data-title="Download">
       <span class="icon-download-alt icon-white"></span>
     </a>
   </div>
