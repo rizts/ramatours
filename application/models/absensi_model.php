@@ -7,6 +7,19 @@ class Absensi_model extends CI_Model{
   function get($id){
     return $this->db->get_where("absensi", array("id"=>$id));
   }
+
+  function list_where($key = null, $value = null, $limit = 10, $offset = 0){
+  	$this->db->join('staffs','staffs.staff_id=absensi.staff_id');  	
+  	$this->db->join('branches','branches.branch_name=staffs.staff_cabang');  	
+
+	if ((isset($key) && isset($value)) && (($key != '0' || $key != '') && $value != '')) {
+		$this->db->like($key,$value);
+	}
+
+	$this->db->limit($limit,$offset);
+
+    return $this->db->get("absensi");
+  }
   
   function add(){
     $staff_id = $this->input->post("staff_id");

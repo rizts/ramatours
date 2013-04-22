@@ -24,6 +24,10 @@ class Role extends DataMapper {
       }
       return $user_list;
     }
+    
+    function _get($id){
+      return $this->db->get_where("user_roles", array("role_id"=>$id))->row();
+    }
 
     function __construct() {
         parent::__construct();

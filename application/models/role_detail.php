@@ -33,8 +33,7 @@ class Role_Detail extends DataMapper {
     }
 
     function _delete($id) {
-        $this->db->where('roled_id', $id);
-        $this->db->delete($this->table);
+        $this->db->delete('user_roled', array("role_id"=>$id));
     }
 
     function delete_by_role_id($id) {
