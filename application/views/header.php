@@ -81,10 +81,9 @@
                         	<li><?php echo anchor('taxes_employees', 'Taxes Employees'); ?></li>
                         	<li><?php echo anchor('employees_status', 'Employees Status'); ?></li>
                         	<li><?php echo anchor('maritals_status', 'Marital Status'); ?></li>
-                          <li><?php echo anchor('titles', 'Title');?></li>
-                          <li><?php echo anchor('components', 'Component(Gaji)'); ?></li>
-                          <li><?php echo anchor('staffs', 'Staff'); ?></li>
-                          <li></li>
+                          	<li><?php echo anchor('titles', 'Title');?></li>
+                          	<li><?php echo anchor('components', 'Component(Gaji)'); ?></li>
+                          	<li><?php echo anchor('staffs', 'Staff'); ?></li>
                         </ul>
                       </li>
                       <li>
@@ -94,9 +93,25 @@
                         	<li><?php echo anchor('absensi', 'Absensi')?></li>
                         	<li><?php echo anchor('izin', 'Izin')?></li>
                         	<li><?php echo anchor('cuti', 'Cuti')?></li>
+                        	<li><?php echo anchor('assets_handover', 'Serah Terima Asset')?></li>
                         </ul>
                       </li>
-                      <li><a href="#" class="blorange">Reporting</a></li>
+                      <li>
+					  	<a href="#" class="blorange">Reporting</a>
+                        <div class="open"></div>
+                        <ul>
+                          	<li><?php echo anchor('staffs/report_list', 'Daftar Karyawan'); ?></li>
+                          	<li><?php echo anchor('components/report_recap', 'Rekap Gaji Karyawan'); ?></li>
+                          	<li><?php echo anchor('components/report_detail', 'Detil Gaji Karyawan'); ?></li>
+                          	<li><?php echo anchor('components/report_slip', 'Slip Gaji'); ?></li>
+                          	<li><?php echo anchor('staffs/report_pph', 'Rekap PPh Karyawan'); ?></li>
+                        	<li><?php echo anchor('assets/report_list', 'List Asset'); ?></li>
+                        	<li><?php echo anchor('staffs/report_cuti', 'Sisa Cuti'); ?></li>
+                        	<li><?php echo anchor('absensi/report', 'Absensi'); ?></li>
+                        	<li><?php echo anchor('cuti/report', 'Cuti'); ?></li>
+                        	<li><?php echo anchor('izin/report', 'Izin'); ?></li>
+                        </ul>
+		  			  </li>
                       <li>
                       	<a href="#" class="blgreen">Config</a>
                       	<div class="open"></div>
