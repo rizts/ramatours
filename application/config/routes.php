@@ -12,7 +12,7 @@ if (!defined('BASEPATH'))
   | and its corresponding controller class/method. The segments in a
   | URL normally follow this pattern:
   |
-  |	example.com/class/method/id/
+  |    example.com/class/method/id/
   |
   | In some instances, however, you may want to remap this relationship
   | so that a different class/function is called than the one
@@ -91,6 +91,19 @@ $route["assets/(:num)/details/edit/(:num)"] = "assets_details/edit";
 $route["assets/(:num)/details/delete/(:num)"] = "assets_details/delete";
 $route["assets/(:num)/details/save"] = "assets_details/save";
 $route["assets/(:num)/details/update"] = "assets_details/update";
+$route["assets/(:num)/details/report"] = "assets_details/report";
+
+// Assets Transaction
+$route["assets/(:num)/handover/index"] = "assets_handover/index";
+$route["assets/(:num)/handover/index/(:num)"] = "assets_handover/index";
+$route["assets/(:num)/handover/detail"] = "assets_handover/detail";
+$route["assets/(:num)/handover/detail/(:num)"] = "assets_handover/detail";
+$route["assets/(:num)/handover/add"] = "assets_handover/add";
+$route["assets/(:num)/handover/edit/(:num)"] = "assets_handover/edit";
+$route["assets/(:num)/handover/delete/(:num)"] = "assets_handover/delete";
+$route["assets/(:num)/handover/save"] = "assets_handover/save";
+$route["assets/(:num)/handover/update"] = "assets_handover/update";
+$route["assets/(:num)/handover/report"] = "assets_handover/report";
 
 // Salaries and Sub Table Salarie
 $route["salaries/(:num)/sub_salaries/index"] = "sub_salaries/index";
