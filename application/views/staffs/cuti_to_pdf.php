@@ -21,7 +21,7 @@
     	<center>
     		<h3>Report Sisa Cuti</h3>
     	</center>
-		<table align="center">
+		<table width="100%" align="center">
 	      <thead>
 	        <tr>
 	          <th>Branch</th>

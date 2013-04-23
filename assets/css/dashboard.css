@@ -421,6 +421,14 @@ div#search{
   color: #d00;
 }
 
+.clear-search-report{
+  position: absolute;
+  z-index: 1000;
+  right: 5px;
+  top: 12px;
+  color: #d00;
+}
+
 .clear-search:hover{
   text-decoration: none;
   color: #d00;

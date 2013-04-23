@@ -756,19 +756,51 @@ class Staffs extends CI_Controller {
         $uri_segment = 3;
         $offset = $this->uri->segment($uri_segment);
 
-    	if ($this->input->get("q") != "") {
-			$param = $this->input->get("q");
-			if ($this->input->get("search_by") == "staff_birthdate") {
-				$birthdate = str_replace(date('Y-'),"",$param);
-				$staff_list->where("DATE_FORMAT(".$this->input->get("search_by").",'%m-%d')",$birthdate);
-			} else {
-				$staff_list->like($this->input->get("search_by"),$param);
-			}
+		if ($this->input->get("staff_cabang") != "") {
+			$staff_list->like('staff_cabang',$this->input->get("staff_cabang"));
+		}
+
+		if ($this->input->get("staff_departement") != "") {
+			$staff_list->like('staff_departement',$this->input->get("staff_departement"));
+		}
+
+		if ($this->input->get("staff_jabatan") != "") {
+			$staff_list->like('staff_jabatan',$this->input->get("staff_jabatan"));
+		}
+
+		if ($this->input->get("staff_name") != "") {
+			$staff_list->like('staff_name',$this->input->get("staff_name"));
 		}
 
         $staff_list->order_by($data['col'], $data['dir']);
         $data['staff_list'] = $staff_list
                         ->get($this->limit, $offset)->all;
+
+		// Branch
+        $branch = new Branch();
+        $list_branch = $branch->list_drop();
+        $branch_selected = $this->input->get('staff_cabang');
+        $data['staff_cabang'] = form_dropdown('staff_cabang',
+                        $list_branch,
+                        $branch_selected);
+
+		// Departement
+        $dept = new Department();
+        $list_dpt = $dept->list_drop();
+        $dpt_selected = $this->input->get('staff_departement');
+        $data['staff_departement'] = form_dropdown('staff_departement',
+                        $list_dpt,
+                        $dpt_selected);
+
+		//Jabatan
+        $title = new Title();
+        $list_jbt = $title->list_drop();
+        $jbt_selected = $this->input->get('staff_jabatan');
+        $data['staff_jabatan'] = form_dropdown('staff_jabatan',
+                        $list_jbt,
+                        $jbt_selected);
+
+		$data['staff_name'] = array('name' => 'staff_name', 'value' => $this->input->get('staff_name'));
 
 		if ($this->input->get('to') == 'pdf') {
 			$this->load->library('html2pdf');
@@ -841,10 +873,51 @@ class Staffs extends CI_Controller {
         $uri_segment = 3;
         $offset = $this->uri->segment($uri_segment);
 
-		if ($this->input->get("q") != "") {
-			$param = $this->input->get("q");
-			$staff_list->like($this->input->get("search_by"),$param);
+		if ($this->input->get("staff_cabang") != "") {
+			$staff_list->like('staff_cabang',$this->input->get("staff_cabang"));
 		}
+
+		if ($this->input->get("staff_departement") != "") {
+			$staff_list->like('staff_departement',$this->input->get("staff_departement"));
+		}
+
+		if ($this->input->get("staff_jabatan") != "") {
+			$staff_list->like('staff_jabatan',$this->input->get("staff_jabatan"));
+		}
+
+		if ($this->input->get("staff_name") != "") {
+			$staff_list->like('staff_name',$this->input->get("staff_name"));
+		}
+
+        $staff_list->order_by($data['col'], $data['dir']);
+        $data['staff_list'] = $staff_list
+                        ->get($this->limit, $offset)->all;
+
+		// Branch
+        $branch = new Branch();
+        $list_branch = $branch->list_drop();
+        $branch_selected = $this->input->get('staff_cabang');
+        $data['staff_cabang'] = form_dropdown('staff_cabang',
+                        $list_branch,
+                        $branch_selected);
+
+		// Departement
+        $dept = new Department();
+        $list_dpt = $dept->list_drop();
+        $dpt_selected = $this->input->get('staff_departement');
+        $data['staff_departement'] = form_dropdown('staff_departement',
+                        $list_dpt,
+                        $dpt_selected);
+
+		//Jabatan
+        $title = new Title();
+        $list_jbt = $title->list_drop();
+        $jbt_selected = $this->input->get('staff_jabatan');
+        $data['staff_jabatan'] = form_dropdown('staff_jabatan',
+                        $list_jbt,
+                        $jbt_selected);
+
+		$data['staff_name'] = array('name' => 'staff_name', 'value' => $this->input->get('staff_name'));
 
         $staff_list->order_by($data['col'], $data['dir']);
         $data['staff_list'] = $staff_list

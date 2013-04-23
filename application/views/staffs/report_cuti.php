@@ -88,7 +88,90 @@ function HeaderLink($value, $key, $col, $dir) {
       <?php echo header_btn_group_report("staffs/report_cuti/");?>
     </div>
     <div id="search_bar" class="widget-header">
-      <?php search_form(array(""=>"By","staff_name"=>"Nama","staff_birthdate"=>"Tgl Lahir")); ?>
+      <form action="" method="get">
+      		<?php
+	      	$myUrl = 'http://'.$_SERVER['HTTP_HOST'];
+			$requestUri = $_SERVER['REQUEST_URI'];
+      		?>
+      		<table width="50%" align="center">
+      			<tr>
+      				<td><span class="search_by">Branch</span></td>
+     				<td>
+     					<div id="search">
+		      				<?php
+						      if(strlen($this->input->get('staff_cabang')) > 0){
+								$requestUri = str_replace($this->input->get('staff_cabang'),"",$requestUri);
+						        echo anchor("$myUrl$requestUri", '<span class="ico-remove"></span>', array(
+						          "class"=>"clear-search-report",
+						          "data-placement"=>"top",
+						          "data-title"=>"Clear search"
+						        ));
+						      }
+						    ?>
+					 		<?php echo $staff_cabang; ?>
+					 	</div>
+					 </td>
+   				</tr>
+      			<tr>
+      				<td><span class="search_by">Department</span></td>
+     				<td>
+     					<div id="search">
+		      				<?php
+						      if(strlen($this->input->get('staff_departement')) > 0){
+								$requestUri = str_replace($this->input->get('staff_departement'),"",$requestUri);
+						        echo anchor("$myUrl$requestUri", '<span class="ico-remove"></span>', array(
+						          "class"=>"clear-search-report",
+						          "data-placement"=>"top",
+						          "data-title"=>"Clear search"
+						        ));
+						      }
+						    ?>
+					 		<?php echo $staff_departement; ?>
+					 	</div>
+					 </td>
+   				</tr>
+      			<tr>
+      				<td><span class="search_by">Title</span></td>
+     				<td>
+     					<div id="search">
+		      				<?php
+						      if(strlen($this->input->get('staff_jabatan')) > 0){
+								$requestUri = str_replace($this->input->get('staff_jabatan'),"",$requestUri);
+						        echo anchor("$myUrl$requestUri", '<span class="ico-remove"></span>', array(
+						          "class"=>"clear-search-report",
+						          "data-placement"=>"top",
+						          "data-title"=>"Clear search"
+						        ));
+						      }
+						    ?>
+					 		<?php echo $staff_jabatan; ?>
+					 	</div>
+					 </td>
+   				</tr>
+      			<tr>
+      				<td><span class="search_by">Name</span></td>
+     				<td>
+     					<div id="search">
+		      				<?php
+						      if(strlen($this->input->get('staff_name')) > 0){
+								$requestUri = str_replace($this->input->get('staff_name'),"",$requestUri);
+						        echo anchor("$myUrl$requestUri", '<span class="ico-remove"></span>', array(
+						          "class"=>"clear-search-report",
+						          "data-placement"=>"top",
+						          "data-title"=>"Clear search"
+						        ));
+						      }
+						    ?>
+					 		<?php echo form_input(array('name' => 'staff_name', 'value' => $this->input->get('staff_name'), 'size' => '28'));?>
+					 	</div>
+					 </td>
+   				</tr>
+   				<tr>
+   					<td>&nbsp;</td>
+	      			<td><input type="submit" name="search" value="Search" class="btn btn-primary" /></td>
+     			</tr>
+	      	</table>
+    	</form>
     </div>
     <table class="table fpTable table-hover">
       <thead>
