@@ -147,7 +147,51 @@ class Absensi extends CI_Controller{
 
     $uri_segment = 3;
     $offset = $this->uri->segment($uri_segment);
-    $data['absensi'] = $this->absensi->list_where($this->input->get('search_by'),$this->input->get('q'));
+
+	$where = array();
+	if ($this->input->get("staff_cabang") != "") {
+		$where['staff_cabang'] = $this->input->get("staff_cabang");
+	}
+
+	if ($this->input->get("staff_departement") != "") {
+		$where['staff_departement'] = $this->input->get("staff_departement");
+	}
+
+	if ($this->input->get("staff_jabatan") != "") {
+		$where['staff_jabatan'] = $this->input->get("staff_jabatan");
+	}
+
+	if ($this->input->get("staff_name") != "") {
+		$where['staff_name'] = $this->input->get("staff_name");
+	}
+
+    $data['absensi'] = $this->absensi->list_where($where);
+
+	// Branch
+    $branch = new Branch();
+    $list_branch = $branch->list_drop();
+    $branch_selected = $this->input->get('staff_cabang');
+    $data['staff_cabang'] = form_dropdown('staff_cabang',
+                    $list_branch,
+                    $branch_selected);
+
+	// Departement
+    $dept = new Department();
+    $list_dpt = $dept->list_drop();
+    $dpt_selected = $this->input->get('staff_departement');
+    $data['staff_departement'] = form_dropdown('staff_departement',
+                    $list_dpt,
+                    $dpt_selected);
+
+	//Jabatan
+    $title = new Title();
+    $list_jbt = $title->list_drop();
+    $jbt_selected = $this->input->get('staff_jabatan');
+    $data['staff_jabatan'] = form_dropdown('staff_jabatan',
+                    $list_jbt,
+                    $jbt_selected);
+
+	$data['staff_name'] = array('name' => 'staff_name', 'value' => $this->input->get('staff_name'));
 
 	if ($this->input->get('to') == 'pdf') {
 		$this->load->library('html2pdf');
@@ -157,6 +201,10 @@ class Absensi extends CI_Controller{
     	$this->html2pdf->html($this->load->view("absensi/to_pdf", $data, true));
     
     	$this->html2pdf->create();
+	} else if ($this->input->get('to') == 'xls') {
+		$param['file_name'] = 'absensi_report.xls';
+		$param['content_sheet'] = $this->load->view('absensi/to_pdf', $data, true);
+		$this->load->view('to_excel',$param);
 	} else {
 	    $config['base_url'] = site_url("absensi/index");
 	    $config['total_rows'] = $total_rows;

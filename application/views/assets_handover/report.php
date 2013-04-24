@@ -1,60 +1,23 @@
 <?php get_header(); ?>
-<?php
-
-function HeaderLink($value, $key, $asset_id, $col, $dir) {
-    $out = "<a href=\"" . site_url('assets/' . $asset_id . '/handover/index') . "?c=";
-    //set column query string value
-    switch ($key) {
-        case "trasset_date_time":
-            $out .= "1";
-            break;
-        case "trasset_staff_id_from":
-            $out .= "2";
-            break;
-        case "trasset_staff_id_to":
-            $out .= "3";
-            break;
-        case "trasset_doc_no":
-            $out .= "4";
-            break;
-        case "trasset_status":
-            $out .= "5";
-            break;
-        case "trasset_id":
-            $out .= "6";
-            break;
-        default:
-            $out .= "0";
-    }
-
-    $out .= "&d=";
-
-    //reverse sort if the current column is clicked
-    if ($key == $col) {
-        switch ($dir) {
-            case "ASC":
-                $out .= "1";
-                break;
-            default:
-                $out .= "0";
-        }
-    } else {
-        //pass on current sort direction
-        switch ($dir) {
-            case "ASC":
-                $out .= "0";
-                break;
-            default:
-                $out .= "1";
-        }
-    }
-
-    //complete link
-    $out .= "\">$value</a>";
-
-    return $out;
+<style type="text/css">
+.modal {
+	width : 800px;
 }
-?>
+.modal-body{
+  max-height: 800px!important;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+  	$("#printPDF").click(function() {
+  		document.location.href = '<?php echo base_url('assets_handover/report').'?'.$_SERVER['QUERY_STRING'].'&to=pdf'; ?>';
+  	});
+
+  	$("#printXLS").click(function() {
+  		document.location.href = '<?php echo base_url('assets_handover/report').'?'.$_SERVER['QUERY_STRING'].'&to=xls'; ?>';
+  	});
+});
+</script>
 <div class="body">
     <div class="content">
         <?php echo $this->session->flashdata('message'); ?>
@@ -63,12 +26,12 @@ function HeaderLink($value, $key, $asset_id, $col, $dir) {
                 <span class="ico-tag"></span>
             </div>
             <h1>Assets
-                <small>Report Asset List</small>
+                <small>Report Serah Terima Asset</small>
             </h1>
         </div>
         <br class="cl" />
         <div class="head blue">
-            <?php echo header_btn_group_report("assets_handover/report/"); ?>
+            <?php echo header_btn_group_report(); ?>
         </div>
         <div class="clearfix"></div>
         <br />
@@ -95,15 +58,15 @@ function HeaderLink($value, $key, $asset_id, $col, $dir) {
         <table class="table boo-table table-bordered table-condensed table-hover">
             <thead>
                 <tr>
-                    <th width="10%" rowspan="2"><?php echo HeaderLink("Date", "trasset_date_time", $asset_id, $col, $dir); ?></th>
+                    <th width="10%" rowspan="2">Date</th>
                     <th colspan="2">Staff</th>
-                    <th width="10%" rowspan="2"><?php echo HeaderLink("No Dokumen", "trasset_doc_no", $asset_id, $col, $dir); ?></th>
-                    <th width="10%" rowspan="2"><?php echo HeaderLink("Status", "trasset_status", $asset_id, $col, $dir); ?></th>
+                    <th width="10%" rowspan="2">No Dokumen</th>
+                    <th width="10%" rowspan="2">Status</th>
                     <th width="25%" rowspan="2">Note</th>
                 </tr>
                 <tr>
-                    <th width="10%"><?php echo HeaderLink("Yang Menyerahkan", "trasset_staff_id_from", $asset_id, $col, $dir); ?></th>
-                    <th width="10%"><?php echo HeaderLink("Yang Menerima", "trasset_staff_id_to", $asset_id, $col, $dir); ?></th>
+                    <th width="10%">Yang Menyerahkan</th>
+                    <th width="10%">Yang Menerima</th>
                 </tr>
             </thead>
             <?php
@@ -128,5 +91,51 @@ echo $row_staff_to->staff_name; ?></td>
             </ul>
         </div>
     </div>
+    <!-- Modal -->
+	<div id="printModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="myModalLabel">Report Serah Terima Asset</h3>
+		</div>
+		<div class="modal-body">
+			<table width="1500px;" style="border-width: 0 0 1px 1px; border-spacing: 0; border-collapse: collapse; border-style: solid;">
+		      <thead>
+                <tr>
+                    <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;" width="10%" rowspan="2">Date</th>
+                    <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;" colspan="2">Staff</th>
+                    <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;" width="10%" rowspan="2">No Dokumen</th>
+                    <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;" width="10%" rowspan="2">Status</th>
+                    <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;" width="25%" rowspan="2">Note</th>
+                </tr>
+                <tr>
+                    <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;" width="10%">Yang Menyerahkan</th>
+                    <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;" width="10%">Yang Menerima</th>
+                </tr>
+            </thead>
+      		<tbody>
+			    <?php
+	            foreach ($assets_handover as $row) {
+	            ?>
+            	<tr>
+	            	<td style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;"><?php echo date_format(new DateTime($row->trasset_date_time),'j M Y'); ?></td>
+	                <td style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;"><?php $row_staff_from = $staff->where('staff_id', $row->trasset_staff_id_from)->get();echo $row_staff_from->staff_name; ?></td>
+	                <td style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;"><?php $row_staff_to = $staff->where('staff_id', $row->trasset_staff_id_to)->get();
+	echo $row_staff_to->staff_name; ?></td>
+	                <td style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;"><?php echo $row->trasset_doc_no; ?></td>
+	                <td style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;"><?php echo $row->trasset_status; ?></td>
+	                <td style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;"><?php echo $row->trasset_note; ?></td>
+	            </tr>
+	            <?php
+				}
+				?>
+      		</tbody>
+		</table>
+		</div>
+		<div class="modal-footer">
+			<button id="printPDF" class="btn btn-primary">Save as PDF</button>
+			<button id="printXLS" class="btn btn-primary">Save as Excel</button>
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		</div>
+	</div>
 </div>
 <?php get_footer(); ?>

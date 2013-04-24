@@ -97,11 +97,11 @@ $(document).ready(function(){
   	});
 
   	$("#printPDF").click(function() {
-  		document.location.href = '<?php echo base_url('staffs/report_list'.'?'.$_SERVER['QUERY_STRING'].'&to=pdf'); ?>';
+  		document.location.href = '<?php echo base_url('staffs/report_list').'?'.$_SERVER['QUERY_STRING'].'&to=pdf'; ?>';
   	});
 
   	$("#printXLS").click(function() {
-  		document.location.href = '<?php echo base_url('staffs/report_list'.'?'.$_SERVER['QUERY_STRING'].'&to=xls'); ?>';
+  		document.location.href = '<?php echo base_url('staffs/report_list').'?'.$_SERVER['QUERY_STRING'].'&to=xls'; ?>';
   	});
 });
 </script>

@@ -307,48 +307,18 @@ class Assets_Handover extends CI_Controller {
 		$data['asset_id'] = $this->asset_id;
 		$data['detail_id'] = $this->detail_id;
 
-        switch ($this->input->get('c')) {
-            case "1":
-                $data['col'] = "trasset_date_time";
-                break;
-            case "2":
-                $data['col'] = "trasset_staff_id_from";
-                break;
-            case "3":
-                $data['col'] = "trasset_doc_no";
-                break;
-            case "4":
-                $data['col'] = "trasset_status";
-                break;
-            case "5":
-                $data['col'] = "trasset_doc_no";
-                break;
-            case "6":
-                $data['col'] = "trasset_id";
-                break;
-            default:
-                $data['col'] = "trasset_id";
-        }
-
-        if ($this->input->get('d') == "1") {
-            $data['dir'] = "DESC";
-        } else {
-            $data['dir'] = "ASC";
-        }
-
-        $asset_handover->where('trasset_asset_id', $this->asset_id)->order_by($data['col'], $data['dir']);
+        $asset_handover->where('trasset_asset_id', $this->asset_id)->order_by('trasset_id', 'ASC');
 
         $total_rows = $asset_handover->count();
         $data['asset_id'] = $this->asset_id;
         $data['title'] = "Assets Handover";
-        $data['btn_add'] = anchor('assets/' . $this->asset_id . '/handover/add', 'Add New', array('class' => 'btn btn-primary'));
         $data['btn_home'] = anchor('assets/', 'Home', array('class' => 'btn'));
 
         $offset = $this->uri->segment($this->uri_segment);
 
         $data['assets_handover'] = $asset_handover
                         ->where('trasset_asset_id', $this->asset_id)
-                        ->order_by($data['col'], $data['dir'])
+                        ->order_by('trasset_id', 'ASC')
                         ->get($this->limit, $offset)->all;
 
 		if ($this->input->get('to') == 'pdf') {
@@ -368,6 +338,19 @@ class Assets_Handover extends CI_Controller {
 	    	$this->html2pdf->html($this->load->view('assets_handover/to_pdf', $data, true));
 	    
 	    	$this->html2pdf->create();
+		} else if ($this->input->get('to') == 'xls') {
+			$data['id'] = $rs->asset_id;
+	        $data['asset_name'] = $rs->asset_name;
+	        $data['asset_code'] = $rs->asset_code;
+	        $data['asset_status'] = $rs->asset_status == '1'? 'Enable':'Disable';
+
+	        $date = new DateTime($rs->date);
+	        $data['date_handover'] = ($rs->date == '0000-00-00' || $rs->date == '0000-00-00 00:00:00')? '':$date->format('d-m-Y');
+	        $data['description'] = $rs->discription;
+
+			$param['file_name'] = 'detail_asset_handover_report.xls';
+    		$param['content_sheet'] = $this->load->view('assets_handover/to_pdf', $data, true);
+    		$this->load->view('to_excel',$param);
 		} else {
 	        $config['base_url'] = site_url('assets/' . $this->asset_id . '/handover/detail');
 	        $config['total_rows'] = $total_rows;

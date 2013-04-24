@@ -4,15 +4,14 @@ if (!defined('BASEPATH'))
 
 if (!function_exists('get_total_component_a')) {
 
-    function get_total_component_a($staff_id,$date) {
+    function get_total_component_a($staff_id,$period) {
     	$total = 0;
     	$ci = &get_instance();
     	$ci->db->select('components.comp_id,components.comp_type,absensi.date,absensi.hari_masuk,salary_components_a.staff_id,salary_components_a.gaji_daily_value,salary_components_a.gaji_amount_value');
     	$ci->db->join('components','components.comp_id=salary_components_a.gaji_component_id');
     	$ci->db->join('absensi','absensi.staff_id=salary_components_a.staff_id');
     	$ci->db->where('salary_components_a.staff_id',$staff_id);
-    	$ci->db->where('absensi.date <=',$date);
-    	$ci->db->where("DATE_FORMAT(absensi.date,'%Y-%m')",date_format(new DateTime($date),'Y-m'));
+    	$ci->db->where("DATE_FORMAT(absensi.date,'%Y-%m')",$period);
   		$comp_a = $ci->db->get("salary_components_a");
 		foreach($comp_a->result() as $sal_a) {
 			$comp = 0;
@@ -29,15 +28,14 @@ if (!function_exists('get_total_component_a')) {
 
 if (!function_exists('get_total_component_b')) {
 
-    function get_total_component_b($staff_id,$date) {
+    function get_total_component_b($staff_id,$period) {
     	$total = 0;
     	$ci = &get_instance();
     	$ci->db->select('components.comp_id,components.comp_type,absensi.date,absensi.hari_masuk,salary_components_b.staff_id,salary_components_b.gaji_daily_value,salary_components_b.gaji_amount_value');
     	$ci->db->join('components','components.comp_id=salary_components_b.gaji_component_id');
     	$ci->db->join('absensi','absensi.staff_id=salary_components_b.staff_id');
     	$ci->db->where('salary_components_b.staff_id',$staff_id);
-    	$ci->db->where('absensi.date <=',$date);
-    	$ci->db->where("DATE_FORMAT(absensi.date,'%Y-%m')",date_format(new DateTime($date),'Y-m'));
+    	$ci->db->where("DATE_FORMAT(absensi.date,'%Y-%m')",$period);
   		$comp_b = $ci->db->get("salary_components_b");
 		foreach($comp_b->result() as $sal_b) {
 			$comp = 0;

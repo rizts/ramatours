@@ -8,12 +8,14 @@ class Cuti_model extends CI_Model{
     return $this->db->get_where("cuti", array("id"=>$id));      
   }
 
-  function list_where($key = null, $value = null, $limit = 10, $offset = 0){
+  function list_where($where = null, $limit = 10, $offset = 0){
   	$this->db->join('staffs','staffs.staff_id=cuti.staff_id');  	
   	$this->db->join('branches','branches.branch_name=staffs.staff_cabang');  	
 
-	if ((isset($key) && isset($value)) && (($key != '0' || $key != '') && $value != '')) {
-		$this->db->like($key,$value);
+	foreach($where as $key=>$value) {
+		if ((isset($key) && isset($value)) && (($key != '0' || $key != '') && $value != '')) {
+			$this->db->like($key,$value);
+		}
 	}
 
 	$this->db->limit($limit,$offset);

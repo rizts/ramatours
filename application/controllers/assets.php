@@ -202,6 +202,9 @@ class Assets extends CI_Controller {
             case "5":
                 $data['col'] = "asset_id";
                 break;
+            case "6":
+                $data['col'] = "branch";
+                break;
             default:
                 $data['col'] = "asset_id";
         }
@@ -214,20 +217,31 @@ class Assets extends CI_Controller {
 
         $total_rows = $asset_list->count();
         $data['title'] = "Assets";
-        $data['btn_add'] = anchor('assets/add', 'Add New', array('class' => 'btn btn-primary'));
         $data['btn_home'] = anchor(base_url(), 'Home', array('class' => 'btn'));
 
         $uri_segment = 3;
         $offset = $this->uri->segment($uri_segment);
 
-    	if ($this->input->get('search')) {
-			if (strpos("date",$this->input->get('search_by')) >= 0) {
-				$asset_list->where($this->input->get('search_by'),$this->input->get('q'));
-			} else { $asset_list->like($this->input->get('search_by'),$this->input->get('q')); }
+		if ($this->input->get("branch") != "") {
+			$asset_list->like('branch',$this->input->get("branch"));
+		}
+
+		if ($this->input->get("asset_name") != "") {
+			$asset_list->like('asset_name',$this->input->get("asset_name"));
 		}
 
         $asset_list->order_by($data['col'], $data['dir']);
         $data['asset_list'] = $asset_list->get($this->limit, $offset)->all;
+
+		// Branch
+        $branch = new Branch();
+        $list_branch = $branch->list_drop();
+        $branch_selected = $this->input->get('branch');
+        $data['branch'] = form_dropdown('branch',
+                        $list_branch,
+                        $branch_selected);
+
+		$data['asset_name'] = array('name' => 'asset_name', 'value' => $this->input->get('asset_name'));
 
 		if ($this->input->get('to') == 'pdf') {
 			$this->load->library('html2pdf');
@@ -237,6 +251,10 @@ class Assets extends CI_Controller {
 	    	$this->html2pdf->html($this->load->view('assets/to_pdf', $data, true));
 	    
 	    	$this->html2pdf->create();
+    	} else if ($this->input->get('to') == 'xls') {
+    		$param['file_name'] = 'asset_list_report.xls';
+    		$param['content_sheet'] = $this->load->view('assets/to_pdf', $data, true);
+    		$this->load->view('to_excel',$param);
 		} else {
 	        $config['base_url'] = site_url("assets/index");
 	        $config['total_rows'] = $total_rows;

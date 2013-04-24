@@ -81,11 +81,11 @@ function HeaderLink($value, $key, $col, $dir) {
 <script type="text/javascript">
 $(document).ready(function(){
   	$("#printPDF").click(function() {
-  		document.location.href = '<?php echo base_url('staffs/report_cuti'.'?'.$_SERVER['QUERY_STRING'].'&to=pdf'); ?>';
+  		document.location.href = '<?php echo base_url('staffs/report_cuti').'?'.$_SERVER['QUERY_STRING'].'&to=pdf'; ?>';
   	});
 
   	$("#printXLS").click(function() {
-  		document.location.href = '<?php echo base_url('staffs/report_cuti'.'?'.$_SERVER['QUERY_STRING'].'&to=xls'); ?>';
+  		document.location.href = '<?php echo base_url('staffs/report_cuti').'?'.$_SERVER['QUERY_STRING'].'&to=xls'; ?>';
   	});
 });
 </script>
@@ -102,7 +102,7 @@ $(document).ready(function(){
     </div>
     <br class="cl" />
     <div class="head blue">
-      <?php echo header_btn_group_report("staffs/report_cuti/");?>
+      <?php echo header_btn_group_report();?>
     </div>
     <div id="search_bar" class="widget-header">
       <form action="" method="get">
@@ -232,7 +232,7 @@ $(document).ready(function(){
 			      <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;">Departement</th>
 			      <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;">Name</th>
 			      <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;">Title</th>
-			      <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;">Sisa Cuti", </th>
+			      <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;">Sisa Cuti</th>
 			    </tr>
 			  </thead>
 			  <?php

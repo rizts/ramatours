@@ -19,14 +19,59 @@
 	</head>
     <body>
     	<center>
-    		<h3>Asset List</h3>
+    		<h3>Detail Salary Report</h3>
     	</center>
+      	<table width="50%" align="center">
+      		<?php
+      		if ($this->input->get('period') != "") {
+      		?>
+  			<tr>
+  				<td>Period</td>
+ 				<td><?php echo bulan($this->input->get('period')); ?></td>
+			</tr>
+      		<?php
+      		}
+      		if ($this->input->get('staff_cabang') != "") {
+      		?>
+  			<tr>
+  				<td>Branch</td>
+ 				<td><?php echo $this->input->get('staff_cabang'); ?></td>
+			</tr>
+      		<?php
+      		}
+      		if ($this->input->get('$staff_departement') != "") {
+      		?>
+  			<tr>
+  				<td>Department</td>
+ 				<td><?php echo $this->input->get('$staff_departement'); ?></td>
+			</tr>
+      		<?php
+      		}
+      		if ($this->input->get('staff_jabatan') != "") {
+      		?>
+  			<tr>
+  				<td>Title</td>
+ 				<td><?php echo $this->input->get('staff_jabatan'); ?></td>
+			</tr>
+      		<?php
+      		}
+      		if ($this->input->get('staff_name') != "") {
+      		?>
+  			<tr>
+  				<td>Name</td>
+ 				<td><?php echo $this->input->get('staff_name'); ?></td>
+			</tr>
+      		<?php
+      		}
+      		?>
+      	</table>
     	<br />
 		<table width="100%" align="center">
 	      <thead>
 	        <tr>
 	          <th rowspan="2">Cabang</th>
 	          <th rowspan="2">Staff</th>
+	          <th rowspan="2">Department</th>
 	          <th rowspan="2">Title</th>
 	          <th colspan="3">Daftar Absensi</th>
 	          <th rowspan="2">Total A</th>
@@ -51,12 +96,13 @@
 	          <tr>
 	            <td><?php if ($row->staff_cabang == $branch) { echo '';} else { $branch = $row->staff_cabang; echo $row->staff_cabang;} ?></td>
 	            <td><?php echo $row->staff_name; ?></td>
+	            <td><?php echo $row->staff_cabang; ?></td>
 	            <td><?php echo $row->staff_jabatan; ?></td>
 	            <td><?php echo $row->hari_masuk; ?></td>
 	            <td><?php echo floor((strtotime($row->date_end)-strtotime($row->date_start))/(60*60*24)); ?></td>
 	            <td><?php echo $row->izin_jumlah_hari; ?></td>
-	            <td><?php $total_a = get_total_component_a($row->staff_id,date('Y-m-d')); echo number_format($total_a,0,',','.'); ?></td>
-	            <td><?php $total_b = get_total_component_b($row->staff_id,date('Y-m-d')); echo number_format($total_b,0,',','.'); ?></td>
+	            <td><?php $total_a = get_total_component_a($row->staff_id,$this->input->get('period')); echo number_format($total_a,0,',','.'); ?></td>
+	            <td><?php $total_b = get_total_component_b($row->staff_id,$this->input->get('period')); echo number_format($total_b,0,',','.'); ?></td>
 	            <td><?php $grand = ($total_a+$total_b); echo $grand; ?></td>
 	            <td><?php echo $row->pph_by_company == 'y'? number_format(get_total_monthly_tax($row->staff_id),0,',','.'):'-'; ?></td>
 	            <td><?php echo $row->pph_by_company == 'n'? number_format(get_total_monthly_tax($row->staff_id),0,',','.'):'-'; ?></td>

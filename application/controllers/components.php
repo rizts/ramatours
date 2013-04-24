@@ -187,33 +187,78 @@ class Components extends CI_Controller {
     }
 
     public function report_detail($offset = 0) {
-		$this->load->helper('report');
+		$this->load->helper(array('report','bulan'));
 
         $uri_segment = 3;
         $offset = $this->uri->segment($uri_segment);
 
-        if ($this->input->get('search_by')) {
-        	$this->db->select('staffs.staff_id,staffs.staff_name,staffs.staff_cabang,staffs.staff_jabatan,staffs.pph_by_company,absensi.hari_masuk,cuti.date_start,cuti.date_end,izin.izin_jumlah_hari');
-        	$this->db->join('branches','branches.branch_name=staffs.staff_cabang');
-        	$this->db->join('absensi','absensi.staff_id=staffs.staff_id','left');
-        	$this->db->join('cuti','cuti.staff_id=staffs.staff_id AND `cuti`.`status` =  \'approve\'','left');
-        	$this->db->join('izin','izin.izin_staff_id=staffs.staff_id','left');
-        	$this->db->like($_GET['search_by'], $_GET['q']);
-        	$this->db->order_by('branches.branch_name', 'ASC');
-        	$this->db->limit($this->limit, $offset);
-        	$staff_branch = $this->db->get('staffs');
-            $total_rows = $staff_branch->num_rows();
-        } else {
-        	$this->db->select('staffs.staff_id,staffs.staff_name,staffs.staff_cabang,staffs.staff_jabatan,staffs.pph_by_company,absensi.hari_masuk,cuti.date_start,cuti.date_end,izin.izin_jumlah_hari');
-        	$this->db->join('branches','branches.branch_name=staffs.staff_cabang');
-        	$this->db->join('absensi','absensi.staff_id=staffs.staff_id','left');
-        	$this->db->join('cuti','cuti.staff_id=staffs.staff_id AND `cuti`.`status` =  \'approve\'','left');
-        	$this->db->join('izin','izin.izin_staff_id=staffs.staff_id','left');
-        	$this->db->order_by('branches.branch_name', 'ASC');
-        	$this->db->limit($this->limit, $offset);
-        	$staff_branch = $this->db->get('staffs');
-            $total_rows = $staff_branch->num_rows();
+		// Period
+        $list_period = array();
+		for ($i=1; $i<=12; $i++) {
+            if ($i < 10) { $i = '0'.$i; }
+            $data[date('Y').'-'.$i] = bulan(date('Y').'-'.$i).' '.(date('Y'));
         }
+        $period_selected = $this->input->get('period') == ''? date('Y-m'):$this->input->get('period');
+        $data['period'] = form_dropdown('period',
+                        $list_period,
+                        $period_selected);
+
+		// Branch
+        $branch = new Branch();
+        $list_branch = $branch->list_drop();
+        $branch_selected = $this->input->get('staff_cabang');
+        $data['staff_cabang'] = form_dropdown('staff_cabang',
+                        $list_branch,
+                        $branch_selected);
+
+		// Departement
+        $dept = new Department();
+        $list_dpt = $dept->list_drop();
+        $dpt_selected = $this->input->get('staff_departement');
+        $data['staff_departement'] = form_dropdown('staff_departement',
+                        $list_dpt,
+                        $dpt_selected);
+
+		//Jabatan
+        $title = new Title();
+        $list_jbt = $title->list_drop();
+        $jbt_selected = $this->input->get('staff_jabatan');
+        $data['staff_jabatan'] = form_dropdown('staff_jabatan',
+                        $list_jbt,
+                        $jbt_selected);
+
+		$data['staff_name'] = array('name' => 'staff_name', 'value' => $this->input->get('staff_name'));
+
+    	$this->db->select('staffs.staff_id,staffs.staff_name,staffs.staff_cabang,staffs.staff_departement,staffs.staff_jabatan,staffs.pph_by_company,absensi.hari_masuk,cuti.date_start,cuti.date_end,izin.izin_jumlah_hari');
+    	$this->db->join('branches','branches.branch_name=staffs.staff_cabang');
+    	$this->db->join('absensi','absensi.staff_id=staffs.staff_id','left');
+    	$this->db->join('cuti','cuti.staff_id=staffs.staff_id AND `cuti`.`status` =  \'approve\'','left');
+    	$this->db->join('izin','izin.izin_staff_id=staffs.staff_id','left');
+
+		if ($this->input->get("period") != "") {
+			$this->db->where("DATE_FORMAT(absensi.date,'%m-%d')",$this->input->get("period"));
+		}
+
+		if ($this->input->get("staff_cabang") != "") {
+			$this->db->like('staffs.staff_cabang',$this->input->get("staff_cabang"));
+		}
+
+		if ($this->input->get("staff_departement") != "") {
+			$this->db->like('staffs.staff_departement',$this->input->get("staff_departement"));
+		}
+
+		if ($this->input->get("staff_jabatan") != "") {
+			$this->db->like('staffs.staff_jabatan',$this->input->get("staff_jabatan"));
+		}
+
+		if ($this->input->get("staff_name") != "") {
+			$this->db->like('staffs.staff_name',$this->input->get("staff_name"));
+		}
+
+    	$this->db->order_by('branches.branch_name', 'ASC');
+    	$this->db->limit($this->limit, $offset);
+    	$staff_branch = $this->db->get('staffs');
+        $total_rows = $staff_branch->num_rows();
 
     	$data['staff_branch'] = $staff_branch;
 
@@ -225,6 +270,10 @@ class Components extends CI_Controller {
 	    	$this->html2pdf->html($this->load->view('components/detail_to_pdf', $data, true));
 	    
 	    	$this->html2pdf->create();
+    	} else if ($this->input->get('to') == 'xls') {
+    		$param['file_name'] = 'detail_staff_component_report.xls';
+    		$param['content_sheet'] = $this->load->view('components/detail_to_pdf', $data, true);
+    		$this->load->view('to_excel',$param);
 		} else {
 	        $config['base_url'] = site_url("components/report_detail");
 	        $config['total_rows'] = $total_rows;
@@ -235,7 +284,6 @@ class Components extends CI_Controller {
 
         	$this->load->view('components/report_detail', $data);
         }
-        //$this->output->enable_profiler(true);
     }
 
 }
