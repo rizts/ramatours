@@ -951,6 +951,10 @@ class Staffs extends CI_Controller {
 	    	$this->html2pdf->html($this->load->view('staffs/cuti_to_pdf', $data, true));
 	    
 	    	$this->html2pdf->create();
+    	} else if ($this->input->get('to') == 'xls') {
+    		$param['file_name'] = 'sisa_cuti_staff_report.xls';
+    		$param['content_sheet'] = $this->load->view('staffs/cuti_to_pdf', $data, true);
+    		$this->load->view('to_excel',$param);
 		} else {
 	        $config['base_url'] = site_url("staffs/index");
 	        $config['total_rows'] = $total_rows;

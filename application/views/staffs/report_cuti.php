@@ -1,5 +1,4 @@
 <?php get_header(); ?>
-<?php echo load_js(array("search_date.php")); ?>
 <?php
 
 function HeaderLink($value, $key, $col, $dir) {
@@ -71,7 +70,25 @@ function HeaderLink($value, $key, $col, $dir) {
     return $out;
 }
 ?>
+<style type="text/css">
+.modal {
+	width : 500px;
+}
+.modal-body{
+  max-height: 500px!important;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+  	$("#printPDF").click(function() {
+  		document.location.href = '<?php echo base_url('staffs/report_cuti'.'?'.$_SERVER['QUERY_STRING'].'&to=pdf'); ?>';
+  	});
 
+  	$("#printXLS").click(function() {
+  		document.location.href = '<?php echo base_url('staffs/report_cuti'.'?'.$_SERVER['QUERY_STRING'].'&to=xls'); ?>';
+  	});
+});
+</script>
 <div class="body">
   <div class="content">
     <?php echo $this->session->flashdata('message'); ?>
@@ -201,6 +218,42 @@ function HeaderLink($value, $key, $col, $dir) {
         <?php echo $pagination; ?>
       </ul>
     </div>
+    <!-- Modal -->
+	<div id="printModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="myModalLabel">Staff List</h3>
+		</div>
+		<div class="modal-body">
+			<table style="border-width: 0 0 1px 1px; border-spacing: 0; border-collapse: collapse; border-style: solid;">
+			  <thead>
+			    <tr>
+			      <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;">Branch</th>
+			      <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;">Departement</th>
+			      <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;">Name</th>
+			      <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;">Title</th>
+			      <th style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;">Sisa Cuti", </th>
+			    </tr>
+			  </thead>
+			  <?php
+			  foreach ($staff_list as $row) {
+			  ?>
+			      <tr>
+			        <td style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;"><?php echo $row->staff_cabang; ?></td>
+			        <td style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;"><?php echo $row->staff_departement; ?></td>
+			        <td style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;"><?php echo $row->staff_name; ?></td>
+			        <td style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;"><?php echo $row->staff_jabatan; ?></td>
+			        <td style="margin: 0; padding: 4px; border-width: 1px 1px 0 0; border-style: solid;"><?php echo $row->saldo_cuti; ?></td>
+			      </tr>
+			  <?php } ?>
+			</table>
+		</div>
+		<div class="modal-footer">
+			<button id="printPDF" class="btn btn-primary">Save as PDF</button>
+			<button id="printXLS" class="btn btn-primary">Save as Excel</button>
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		</div>
+	</div>
   </div>
 </div>
 
