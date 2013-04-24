@@ -196,8 +196,9 @@ class Components extends CI_Controller {
         $list_period = array();
 		for ($i=1; $i<=12; $i++) {
             if ($i < 10) { $i = '0'.$i; }
-            $data[date('Y').'-'.$i] = bulan(date('Y').'-'.$i).' '.(date('Y'));
+            $list_period[date('Y').'-'.$i] = bulan(date('Y').'-'.$i).' '.(date('Y'));
         }
+        
         $period_selected = $this->input->get('period') == ''? date('Y-m'):$this->input->get('period');
         $data['period'] = form_dropdown('period',
                         $list_period,
