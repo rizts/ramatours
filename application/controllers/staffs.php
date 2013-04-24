@@ -738,6 +738,21 @@ class Staffs extends CI_Controller {
             case "10":
                 $data['col'] = "staff_id";
                 break;
+            case "11":
+                $data['col'] = "staff_sex";
+                break;
+            case "12":
+                $data['col'] = "staff_birthdate";
+                break;
+            case "13":
+                $data['col'] = "mulai_kerja";
+                break;
+            case "14":
+                $data['col'] = "staff_status_nikah";
+                break;
+            case "15":
+                $data['col'] = "staff_status_karyawan";
+                break;
             default:
                 $data['col'] = "staff_id";
         }
@@ -766,6 +781,11 @@ class Staffs extends CI_Controller {
 
 		if ($this->input->get("staff_jabatan") != "") {
 			$staff_list->like('staff_jabatan',$this->input->get("staff_jabatan"));
+		}
+
+		if ($this->input->get("staff_birthdate") != "") {
+			$birthdate = str_replace(date('Y-'),"",$this->input->get("staff_birthdate"));
+			$staff_list->where("DATE_FORMAT(staff_birthdate,'%m-%d')",$birthdate);
 		}
 
 		if ($this->input->get("staff_name") != "") {
@@ -810,6 +830,10 @@ class Staffs extends CI_Controller {
 	    	$this->html2pdf->html($this->load->view('staffs/list_to_pdf', $data, true));
 	    
 	    	$this->html2pdf->create();
+    	} else if ($this->input->get('to') == 'xls') {
+    		$param['file_name'] = 'staff_list_report.xls';
+    		$param['content_sheet'] = $this->load->view('staffs/list_to_pdf', $data, true);
+    		$this->load->view('to_excel',$param);
 		} else {
 	        $config['base_url'] = site_url("staffs/index");
 	        $config['total_rows'] = $total_rows;
@@ -918,10 +942,6 @@ class Staffs extends CI_Controller {
                         $jbt_selected);
 
 		$data['staff_name'] = array('name' => 'staff_name', 'value' => $this->input->get('staff_name'));
-
-        $staff_list->order_by($data['col'], $data['dir']);
-        $data['staff_list'] = $staff_list
-                        ->get($this->limit, $offset)->all;
 
 		if ($this->input->get('to') == 'pdf') {
 			$this->load->library('html2pdf');
